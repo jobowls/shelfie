@@ -2,7 +2,7 @@ module.exports = {
 	getProduct: (req, res) => {
 		const db = req.app.get("db");
 		const {id} = req.params
-		db.get_meme(+id).then(response => {
+		db.get_product(+id).then(response => {
 			const data = response[0];
 			console.log(data)
 			res.status(200).send(data);
