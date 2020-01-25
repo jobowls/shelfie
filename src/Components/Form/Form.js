@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
+import {withRouter} from 'react-router-dom';
+
 
 class Form extends Component {
     constructor() {
@@ -9,10 +11,19 @@ class Form extends Component {
             id: 0,
             url: '',
             name: '',
-            price: 0
+            price: 0,
+            editing: false
         }
 
     }
+    componentDidMount() {
+        if(this.props.match.params.id) {
+        console.log('this.props.match', this.props.match)
+            axios.get(`/api/products/${this.props.match.params.id}`)
+            .then(res => this.setState({id: res.data.id, url: res.data.url, name: res.data.name, price: res.data.price}))
+        }
+    }
+
     handleChange = e => {
         const {name, value} = e.target
         this.setState({
@@ -22,18 +33,6 @@ class Form extends Component {
 
 
 
-    // componentDidMount() {
-    //     if(this.props.match.params.id) {
-    //         console.log('this.props.match', this.props.match)
-    //         axios.get(`/api/products/${this.props.match.params.id}`)
-    //         .then(res => this.setState({
-    //             id: res.data.id,
-    //             url: res.data.url,
-    //             name: res.data.name,
-    //             price: res.data.price
-    //         }))
-    //     }
-    // }
 
     render() {
         const {editing, id, url, name, price} = this.state
@@ -48,7 +47,7 @@ class Form extends Component {
                 <p> Price: </p>
                 <input  /> 
                 {editing ? (
-                <button  onClick={() => this.cancelAddProduct} > Cancel </button>
+                <button  onClick={() => this.cancelEdit} > Cancel </button>
                 ) : (
                 <button onClick={() => this.addProduct(id, url, name, price)}> Add to Inventory </button>
             )
@@ -59,4 +58,4 @@ class Form extends Component {
     }
 }
 
-export default Form;
+export default withRouter(Form);

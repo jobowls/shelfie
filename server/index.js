@@ -18,7 +18,6 @@ app.use(cors());
 // app.delete("/api/products/:id", ctrl.deleteProduct);
 
 
-
 massive(CONNECTION_STRING).then(db => {
     app.set('db', db);
     console.log('db connected');
