@@ -18,7 +18,9 @@ function Header(props) {
 
             </div>
                 <div id="headbutt">
+                    <Link to="/" >                    
                     <button id="dashbutt"> Shelfie Shop </button>
+                    </Link>
                     <button id="formbutt" onClick={() => props.history.push('/form')}> New Product </button>
                 </div>
         </header>
