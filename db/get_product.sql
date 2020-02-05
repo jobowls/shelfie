@@ -1,3 +1,2 @@
-SELECT *
-FROM products
+SELECT * FROM shelfie
 WHERE id = $1;

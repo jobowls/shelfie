@@ -1,61 +1,118 @@
-import React, {Component} from 'react';
-import axios from 'axios';
-import {withRouter} from 'react-router-dom';
-
+import React, {Component} from 'react'
+import axios from 'axios'
+import {withRouter} from 'react-router-dom'
 
 class Form extends Component {
-    constructor() {
-        super();
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            id: 0,
-            url: '',
-            name: '',
-            price: 0,
-            editing: false
-        }
-
+    this.state = {
+      id: '',
+      name: '',
+      price: 0,
+      url: '',
+      edit: false
     }
-    componentDidMount() {
-        if(this.props.match.params.id) {
-        console.log('this.props.match', this.props.match)
-            axios.get(`/api/products/${this.props.match.params.id}`)
-            .then(res => this.setState({id: res.data.id, url: res.data.url, name: res.data.name, price: res.data.price}))
-        }
+  }
+
+  componentDidMount = () => {
+    const {id} = this.props.match.params;
+    console.log(this.props)
+
+    if (id) {
+      console.log('hit')
+      axios.get(`/api/product/${id}`).then(results => {
+        const {name, price, url} = results.data[0]
+        console.log(results.data)
+        this.setState({id, name, price, url, edit: true})
+      })
     }
+  }
 
-    handleChange = e => {
-        const {name, value} = e.target
-        this.setState({
-            [name]: value
-        })
+  componentDidUpdate = (prevProp) => {
+    const {id} = this.props.match.params;
+
+    if(!id && this.props !== prevProp) {
+      this.setState({id: '', name: '', price: '', url: '', edit: false})
     }
+  }
 
+  // componentDidUpdate = (prevProp) => {
+  //   const {id} = this.props;
 
+  //   if (id && prevProp.id !== id) {
+  //     axios.get(`/api/product/${id}`).then(results => {
+  //       const {name, price, url} = results.data[0];
 
+  //       this.setState({name: name, price: price, url: url, edit: true})
+  //     })
+  //   }
+  // }
 
-    render() {
-        const {editing, id, url, name, price} = this.state
+  handleChange = ({name, value}) => {
+    this.setState({[name]: value})
+  }
 
-        return(
-            <div className="form-box">
-                
-                <p> Image URL: </p>
-                <input name="url" onChange="e => this.handleChange(e)" placeholder='img url here' />
-                <p> Product Name: </p>
-                <input  />
-                <p> Price: </p>
-                <input  /> 
-                {editing ? (
-                <button  onClick={() => this.cancelEdit} > Cancel </button>
-                ) : (
-                <button onClick={() => this.addProduct(id, url, name, price)}> Add to Inventory </button>
-            )
-            } 
+  addProduct = () => {
+    const {name, price, url} = this.state;
 
+    axios.post('/api/product', {name, price, url}).then(results => {
+      this.clearInputs()
+      this.props.history.push('/')
+    }).catch(err => console.log(err))
+  }
+
+  editProduct = () => {
+    const {id} = this.state;
+    const {name, price, url} = this.state;
+
+    axios.put(`/api/product/${id}`, {name, price, url}).then(results => {
+      this.clearInputs()
+      this.props.history.push('/')
+    })
+  }
+
+  clearInputs = () => {
+    this.props.history.push('/')
+    this.setState({name: '', price: 0, url: '', edit: false})
+  }
+
+  render() {
+    const {edit, name, price, url} = this.state;
+
+    return (
+      <section id="list">
+        <section id="product-form">
+          <div id="edit-box" >
+
+          <img id="form-image" src={url} alt=""/>
+
+            <h2> Update Product Image: </h2>
+          <input name="url" value={url} placeholder="Upload Image" onChange={(e) => this.handleChange(e.target)} />
+
+            <h2> Update Product Title: </h2>
+          <input name="name" value={name} placeholder="Enter Name" onChange={(e) =>this.handleChange(e.target)} />
+
+            <h2> Update Shelfie Price: </h2>
+          <input name="price" value={price} placeholder="Enter Price" onChange={(e) =>this.handleChange(e.target)} />
+
+          <div id="form-button">
+            <button className="form-button"
+              onClick = {() => {this.clearInputs()}}> Cancel </button>
+            {edit ? <button className="form-button" onClick = {() => this.editProduct()}> Save Changes </button> : <button className="form-button" onClick = {() => this.addProduct()}> Add to Shelfie Store </button>}
+
+           {/* <div id="form-button">
+             <button className="form-button" onClick={() => {
+               this.clearInputs()}}> Cancel Changes </button>
+               {edit ?
+               <button className="form-button" onClick={() => this.editProduct()}> Save Changes </button> :
+               <button className="form-button" onClick={() => this.addProduct()}> Add to Shelfie Store </button>
+             } */}
             </div>
-        )
-    }
+          </div>
+        </section>
+      </section>
+    )
+  }
 }
-
-export default withRouter(Form);
+export default withRouter(Form)
