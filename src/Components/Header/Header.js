@@ -1,29 +1,29 @@
 import React from 'react'
 import '../../App.css'
-import shelfie from '../../shelfie_icon.png'
 import {Link, withRouter} from 'react-router-dom'
+import logo from '../../assets/logo.jpg'
 
 function Header(props) {
     return (
-        <header id="main-header">
-            <div className="left-header">
-                <div id="shelfie" >
-                    <Link to="/" >
-                        <button id="logo"> <img src={shelfie} id='shelfie-icon' alt="" /> </button>
-                    </Link>
+        <div>
+            <header id='header'>
+                <div id='logo-container'>
+                    {/* <Link to='/' >
+                    </Link> */}
+                    <img id='logo' src={logo} alt='' />
                 </div>
-                <div>
-                    <h1> SHELFIE </h1>
-                </div>
-
-            </div>
-                <div id="headbutt">
-                    <Link to="/" >                    
-                    <button id="dashbutt"> Shelfie Shop </button>
-                    </Link>
-                    <button id="formbutt" onClick={() => props.history.push('/form')}> New Product </button>
-                </div>
-        </header>
+                    <div id="navbar">
+                <Link to='/form' >
+                        <button id='inventory' > New Design </button>
+                </Link>
+                        <button id='inventory' > Instagram </button>
+                        <a href='https://www.etsy.com/shop/FreshlyPickedPrints?ref=seller-platform-mcnav' >
+                            <button id='inventory' > Etsy Shop </button>
+                        </a>
+                        <button id='inventory' > Cart </button>
+                    </div>
+            </header>
+        </div>
     )
 }
-export default withRouter(Header) 
+export default withRouter(Header)
